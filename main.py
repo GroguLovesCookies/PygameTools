@@ -1,5 +1,5 @@
 import pygame
-from classes.custom_sprite import CustomSprite
+from classes.custom_sprite import CustomSprite, Anchors
 
 
 SIZE = (800, 600)
@@ -21,10 +21,10 @@ while running:
 
         screen.fill((0, 0, 0))
         
-        platform = CustomSprite((0, SIZE[1]-20, SIZE[0], 20), (100, 0, 0))
+        platform = CustomSprite((0, -SIZE[1]//2, SIZE[0], 20), (100, 0, 0), SIZE, Anchors.CENTER_X|Anchors.BOTTOM_Y)
         sprites.add(platform)
 
-        player = CustomSprite((SIZE[0]//2-20, SIZE[1]//2-20, 40, 40), (0, 0, 100))
+        player = CustomSprite((0, 0, 40, 40), (0, 0, 100), SIZE)
         sprites.add(player)
 
         for sprite in sprites:
