@@ -21,10 +21,10 @@ while running:
 
         screen.fill((0, 0, 0))
         
-        platform = CustomSprite((0, -SIZE[1]//2, SIZE[0], 20), (100, 0, 0), SIZE, Anchors.CENTER_X|Anchors.BOTTOM_Y)
+        platform = CustomSprite((0, Anchors.SNAP_TO_BOTTOM, Anchors.FILL_HORIZONTAL, 20), (100, 0, 0), SIZE, Anchors.CENTER_X|Anchors.BOTTOM_Y)
         sprites.add(platform)
 
-        player = CustomSprite((0, 0, 40, 40), (0, 0, 100), SIZE)
+        player = CustomSprite((Anchors.SNAP_TO_RIGHT, 0, 40, 40), (0, 0, 100), SIZE, Anchors.RIGHT_X|Anchors.CENTER_Y)
         sprites.add(player)
 
         for sprite in sprites:
