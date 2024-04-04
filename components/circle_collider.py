@@ -4,8 +4,8 @@ import coordinate.conversions
 
 
 class CircleCollider(Collider):
-    def __init__(self, parent, colliders_to_check, size):
-        super().__init__(parent, colliders_to_check)
+    def __init__(self, parent, colliders_to_check, size, offset: Vector2 = Vector2(0, 0)):
+        super().__init__(parent, colliders_to_check, offset)
         self.size = size
 
     def is_colliding(self, other):
@@ -16,7 +16,3 @@ class CircleCollider(Collider):
                 return True
 
         return False
-
-    def tick(self):
-        if self.check_all_collisions():
-            print("Collision")

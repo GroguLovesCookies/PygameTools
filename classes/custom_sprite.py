@@ -117,7 +117,13 @@ class CustomSprite(pygame.sprite.Sprite):
             else:
                 min_index = i + 1
             i = (max_index - min_index) // 2
-        self.components.insert(i, component)
+        self.components.insert(i + 1, component)
 
         return component
+
+    def get_component(self, component_type: type):
+        for component in self.components:
+            if type(component) == component_type:
+                return component
+        return
             

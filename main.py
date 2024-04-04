@@ -20,12 +20,12 @@ colliders = []
 # sprites.add(platform)
 
 player = CustomSprite(Vector2(0, 0), Vector2(40, 40), (0, 0, 100), SIZE, Anchors.CENTER_X|Anchors.CENTER_Y)
-player.add_component(RigidBodyComponent, 2)
+player.add_component(RigidBodyComponent, 2, 0)
 player.add_component(CircleCollider, colliders, 20)
 sprites.add(player)
 
 collidable = CustomSprite(Vector2(0, Anchors.SNAP_TO_BOTTOM), Vector2(40, 40), (0, 100, 0), SIZE, Anchors.CENTER_X|Anchors.BOTTOM_Y)
-coll = collidable.add_component(CircleCollider, [], 20)
+coll = collidable.add_component(CircleCollider, [], 20, Vector2(0, 20))
 colliders.append(coll)
 sprites.add(collidable)
 
@@ -41,6 +41,7 @@ while running:
         sprite.tick()
         screen.blit(sprite.surface, sprite.rect)
 
+    print(player.pos)
 
     pygame.display.update()
 
