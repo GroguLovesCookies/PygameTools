@@ -11,8 +11,8 @@ class CircleCollider(Collider):
     def is_colliding(self, other):
         if type(other) == CircleCollider:
             total_length = self.size + other.size
-            center_diff = (other.center - self.center).sqr_magnitude
-            if total_length * total_length > center_diff:
-                return True
+            center_diff = (other.center - self.center).magnitude
+            if total_length > center_diff:
+                return (other.center - self.center).normalized, total_length - center_diff
 
-        return False
+        return None

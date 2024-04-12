@@ -22,17 +22,34 @@ class Collider(Component):
 
     def check_all_collisions(self) -> bool:
         for collider in self.colliders:
-            if self.is_colliding(collider):
-                return collider
+            if collider.id == self.id:
+                continue
+            collision = self.is_colliding(collider)
+            if collision is not None:
+                return *collision, collider
 
-        return
+        return None, None, None
     
     def tick(self):
-        coll = self.check_all_collisions()
+        normal, depth, coll = self.check_all_collisions()
         if coll is not None:
-            rb = self.parent.get_component(RigidBodyComponent)
-            if rb is not None:
-                rb.trigger_collision(self, coll)
+            normal
+
+            rb1 = self.parent.get_component(RigidBodyComponent)
+            rb2 = coll.parent.get_component(RigidBodyComponent)
+            first_was_static = False
+
+            if rb1 is None or rb1.static:
+                first_was_static = True
+            else:
+                self.parent.move_cartesian_pos((-normal*0.5)*depth)
+
+            if rb2 is not None and not rb2.static:
+                if first_was_static:
+                    rb2.parent.move_cartesian_pos(normal*depth)
+                else:
+                    rb2.parent.move_cartesian_pos(normal*0.5*depth)
+                
 
     def late_tick(self):
         ...

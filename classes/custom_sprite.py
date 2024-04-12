@@ -96,6 +96,9 @@ class CustomSprite(pygame.sprite.Sprite):
         for callback in self.pos_changed:
             callback()
 
+    def move_cartesian_pos(self, amount: Vector2):
+        self.set_cartesian_pos(self.cartesian_pos + amount)
+
     def tick(self):
         for component in self.components:
             component.tick()
