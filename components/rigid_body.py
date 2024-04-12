@@ -1,5 +1,6 @@
 from components.component import Component
 from vector.vector import Vector2
+import numpy
 
 
 class RigidBodyComponent(Component):
@@ -8,29 +9,34 @@ class RigidBodyComponent(Component):
 
     COMPONENT_INDEX = 0
 
-    def __init__(self, parent, mass, elasticity):
+    TYPE_CIRCLE = 0
+    TYPE_BOX = 1
+
+    def __init__(self, parent, density, restitution, dimensions, body_type, static):
         super().__init__(parent)
 
         self.position = self.parent.cartesian_pos
-        self.mass = mass
-        self.elasticity = elasticity
-        self.velocity = Vector2(0, 0)
-        self.acceleration = Vector2(0, 0)
+        self.linear_velocity = Vector2(0, 0)
+        self.rotation = 0
+        self.rotational_velocity = 0
 
-    def tick(self):
-        self.acceleration = Vector2(0, RigidBodyComponent.GRAVITY)
-        self.velocity += self.acceleration
-        self.position += self.velocity
+        self.density = density
+        self.area = 0
+        self.restitution = restitution
+        self.static = static
 
-    def trigger_collision(self, collider, other):
-        while collider.is_colliding(other):
-            self.position -= self.velocity * 0.05
-            pos = Vector2(int(self.position.x), int(self.position.y))
-            self.parent.set_cartesian_pos(pos)
-        self.position -= self.velocity
-        self.velocity = Vector2(0, 0)
+        self.body_type = body_type
+        if body_type == RigidBodyComponent.TYPE_CIRCLE:
+            self.radius = dimensions
+            self.get_circle_data()
+        else:
+            self.width, self.height = dimensions
+            self.get_box_data()
+
+        self.mass = self.density * self.area
+
+    def get_circle_data(self):
+        self.area = numpy.pi * self.radius * self.radius
     
-    def late_tick(self):
-        pos = Vector2(int(self.position.x), int(self.position.y))
-        self.parent.set_cartesian_pos(pos)
-
+    def get_box_data(self):
+        self.area = self.width * self.height

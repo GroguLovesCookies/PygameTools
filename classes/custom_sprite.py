@@ -42,6 +42,7 @@ class CustomSprite(pygame.sprite.Sprite):
                 self.size.y = self.screen_size[1]
         
         self.surface = pygame.Surface(self.size.toarray())
+        self.col = col
         self.surface.fill(col)
         self.rect = self.surface.get_rect()
 

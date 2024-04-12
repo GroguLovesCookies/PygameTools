@@ -62,5 +62,9 @@ class Vector2:
     def angle(self):
         return numpy.arctan2(self.y/self.x)
 
+    @property
+    def normalized(self):
+        return Vector2(self.x/self.magnitude, self.y/self.magnitude)
+
 
 Vector2.ZERO = Vector2(0, 0)

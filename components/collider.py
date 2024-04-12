@@ -32,7 +32,6 @@ class Collider(Component):
         if coll is not None:
             rb = self.parent.get_component(RigidBodyComponent)
             if rb is not None:
-                print("Coll")
                 rb.trigger_collision(self, coll)
 
     def late_tick(self):
