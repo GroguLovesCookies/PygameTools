@@ -36,6 +36,7 @@ class RigidBodyComponent(Component):
             self.get_box_data()
 
         self.mass = self.density * self.area
+        self.inv_mass = 0 if self.static else 1/self.mass
 
     def get_circle_data(self):
         self.area = numpy.pi * self.radius * self.radius

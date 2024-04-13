@@ -58,11 +58,15 @@ class Collider(Component):
 
             restitution = min(rb1.restitution, rb2.restitution)
 
-            j = -(1 + restitution) * (rb2.linear_velocity - rb1.linear_velocity).dot(normal)
-            j /= (1/rb1.mass) + (1/rb2.mass)
+            rel_dot_normal = (rb2.linear_velocity - rb1.linear_velocity).dot(normal)
+            if rel_dot_normal > 0:
+                return
 
-            rb1.linear_velocity -= (j / rb1.mass) * normal
-            rb2.linear_velocity += (j / rb2.mass) * normal
+            j = -(1 + restitution) * rel_dot_normal
+            j /= rb1.inv_mass + rb2.inv_mass
+
+            rb1.linear_velocity -= j * rb1.inv_mass * normal
+            rb2.linear_velocity += j * rb2.inv_mass * normal
 
                 
 
