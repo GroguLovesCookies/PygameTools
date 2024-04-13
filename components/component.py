@@ -8,8 +8,8 @@ class Component:
         self.id = Component.TOTAL
         Component.TOTAL += 1
 
-    def tick(self):
+    def tick(self, time):
         ...
 
-    def late_tick(self):
+    def late_tick(self, time):
         ...

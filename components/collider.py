@@ -31,7 +31,7 @@ class Collider(Component):
 
         return None, None, None
     
-    def tick(self):
+    def tick(self, time):
         normal, depth, coll = self.check_all_collisions()
 
         if coll is not None:
@@ -58,5 +58,5 @@ class Collider(Component):
 
                 
 
-    def late_tick(self):
+    def late_tick(self, time):
         ...

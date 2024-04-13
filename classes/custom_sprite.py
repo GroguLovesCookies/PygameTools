@@ -133,11 +133,11 @@ class CustomSprite(pygame.sprite.Sprite):
     def rotate(self, amount):
         self.set_rotation(numpy.rad2deg(self.rotation) + amount)
 
-    def tick(self):
+    def tick(self, time):
         for component in self.components:
-            component.tick()
+            component.tick(time)
         for component in self.components:
-            component.late_tick()
+            component.late_tick(time)
 
     def add_component(self, component_type: type, *args):
         component = component_type(self, *args)

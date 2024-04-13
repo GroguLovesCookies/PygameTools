@@ -40,3 +40,7 @@ class RigidBodyComponent(Component):
     
     def get_box_data(self):
         self.area = self.width * self.height
+
+    def tick(self, time):
+        self.parent.move_cartesian_pos(self.linear_velocity * time)
+        self.parent.rotate(self.rotational_velocity * time)
