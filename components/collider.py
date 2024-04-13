@@ -5,6 +5,7 @@ from vector.vector import Vector2
 
 class Collider(Component):
     COMPONENT_INDEX = 1
+    Checked = []
 
     def __init__(self, parent, colliders_to_check, offset: Vector2 = Vector2(0, 0)):
         super().__init__(parent)
@@ -32,9 +33,6 @@ class Collider(Component):
     
     def tick(self):
         normal, depth, coll = self.check_all_collisions()
-        if coll is not None:
-            self.parent.col = (100, 0, 0)
-            coll.parent.col = (100, 100, 100)
 
         if coll is not None:
             rb1 = self.parent.get_component(RigidBodyComponent)

@@ -14,5 +14,9 @@ class CircleCollider(Collider):
             center_diff = (other.center - self.center).magnitude
             if total_length > center_diff:
                 return (other.center - self.center).normalized, total_length - center_diff
+        else:
+            collision = other.is_colliding(self)
+            if collision is not None:
+                return -collision[0], collision[1]
 
-        return None
+
