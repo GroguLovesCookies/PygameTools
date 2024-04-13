@@ -36,7 +36,7 @@ class Collider(Component):
             self.parent.col = (100, 0, 0)
             coll.parent.col = (100, 100, 100)
 
-        """if coll is not None:
+        if coll is not None:
             rb1 = self.parent.get_component(RigidBodyComponent)
             rb2 = coll.parent.get_component(RigidBodyComponent)
             first_was_static = False
@@ -56,7 +56,7 @@ class Collider(Component):
                 second_was_static = True
 
             if second_was_static:
-                self.parent.move_cartesian_pos((-normal*0.5)*depth)"""
+                self.parent.move_cartesian_pos((-normal*0.5)*depth)
 
                 
 

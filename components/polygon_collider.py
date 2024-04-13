@@ -8,13 +8,28 @@ class PolygonCollider(Collider):
     
     def is_colliding(self, other):
         if type(other) == PolygonCollider:
+            depth = 1000000000000000000000000000000
+            normal = Vector2(0, 0)
             for axis in self.parent.edge_normals:
                 minA, maxA = PolygonCollider.project_vertices(self.parent.cartesian_vertices, axis)
                 minB, maxB = PolygonCollider.project_vertices(other.parent.cartesian_vertices, axis)
 
                 if(minA >= maxB or minB >= maxA):
                     return None
-        return True, True
+                
+                cur_depth = min(maxA - minB, maxB - minA)
+
+                if cur_depth < depth:
+                    depth = cur_depth
+                    normal = axis
+
+        depth = depth * (1/normal.magnitude)
+
+        centers = other.parent.cartesian_pos - self.parent.cartesian_pos
+        if normal.dot(centers) < 0:
+            normal = -normal
+
+        return normal.normalized, depth
             
             
 
