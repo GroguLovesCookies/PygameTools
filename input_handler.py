@@ -40,3 +40,6 @@ class InputHandler:
 
     def get_normalized_axis(self):
         return self.state["Axis"].normalized
+
+    def get_axis_x(self):
+        return self.state["Axis"].x

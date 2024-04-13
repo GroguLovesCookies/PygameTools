@@ -88,7 +88,7 @@ class CustomSprite(pygame.sprite.Sprite):
         ]
         return cls(pos, vertices, col, scr_size, anchor, CustomSprite.TYPE_POLYGON, rot)
 
-    def true_vertices(self):
+    def true_vertices(self, camera):
         if self.sprite_type == CustomSprite.TYPE_POLYGON:
             output = []
             for vert in self.vertices:
@@ -97,7 +97,7 @@ class CustomSprite(pygame.sprite.Sprite):
 
                 screen_coords = coordinate.conversions.cartesian_to_pygame(rx + self.cartesian_pos.x, ry + self.cartesian_pos.y, *self.screen_size.toarray())
                 try:
-                    output.append([int(i) for i in screen_coords])
+                    output.append([int(screen_coords[0]) + camera.scroll.x, int(screen_coords[1] + camera.scroll.y)])
                 except:
                     output.append((0, 0))
             return output
@@ -205,12 +205,14 @@ class CustomSprite(pygame.sprite.Sprite):
                 return component
         return
     
-    def draw(self, screen):
+    def draw(self, screen, camera):
+        true_pos = self.pos + camera.scroll
+
         if self.img is not None:
             rect = self.img.get_rect()
-            rect.center = self.pos.toarray()
+            rect.center = true_pos.toarray()
             screen.blit(self.img, rect)
         elif self.sprite_type == CustomSprite.TYPE_CIRCLE:
-            pygame.draw.circle(screen, self.col, self.pos.toarray(), self.radius)
+            pygame.draw.circle(screen, self.col, true_pos.toarray(), self.radius)
         else:
-            pygame.draw.polygon(screen, self.col, self.true_vertices())
+            pygame.draw.polygon(screen, self.col, self.true_vertices(camera))

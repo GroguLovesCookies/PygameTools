@@ -4,7 +4,7 @@ import numpy
 
 
 class RigidBodyComponent(Component):
-    GRAVITY = Vector2(0, -120)
+    GRAVITY = Vector2(0, -0.2)
 
     COMPONENT_INDEX = 0
 
@@ -45,11 +45,11 @@ class RigidBodyComponent(Component):
 
     def tick(self, time):
         if not self.static:
-            self.linear_velocity += self.GRAVITY * (1/60)
-            # self.linear_velocity += (self.force * self.inv_mass) * time
+            self.linear_velocity += self.GRAVITY
+            self.linear_velocity += (self.force * self.inv_mass)
 
-        self.parent.move_cartesian_pos(self.linear_velocity * time)
-        self.parent.rotate(self.rotational_velocity * time)
+        self.parent.move_cartesian_pos(self.linear_velocity)
+        self.parent.rotate(self.rotational_velocity)
 
         self.force = Vector2(0, 0)
 

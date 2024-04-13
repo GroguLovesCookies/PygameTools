@@ -27,6 +27,10 @@ class Vector2:
             return Vector2(self.x * other.x, self.y * other.y)
         return Vector2(self.x * other, self.y * other)
 
+    def __truediv__(self, other):
+        return self * (1/other)
+        
+
     def __rmul__(self, other):
         return Vector2(self.x * other, self.y * other)
 
