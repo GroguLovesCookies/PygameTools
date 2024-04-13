@@ -3,6 +3,7 @@ import coordinate.conversions
 from vector.vector import Vector2
 from components.component import Component
 from typing import List
+import numpy
 
 
 class Anchors:
@@ -26,25 +27,29 @@ class Anchors:
 
 
 class CustomSprite(pygame.sprite.Sprite):
-    def __init__(self, pos: Vector2, size: Vector2, col, screen_size: Vector2, anchor = Anchors.CENTER_X|Anchors.CENTER_Y):
+    TYPE_CIRCLE = 0
+    TYPE_POLYGON = 1
+    TYPE_OTHER = 2
+
+    def __init__(self, pos: Vector2, dimensions, col, screen_size: Vector2, anchor = Anchors.CENTER_X|Anchors.CENTER_Y, sprite_type = TYPE_POLYGON, rotation: float = 0):
         super().__init__()
         self.pos_changed = []
 
         self.screen_size = screen_size
         self.anchor = anchor
-
-        self.size = size
-        if type(size.x) == float:
-            if size.x == Anchors.FILL_HORIZONTAL:
-                self.size.x = self.screen_size.x
-        if type(size.y) == float:
-            if size.y == Anchors.FILL_VERTICAL:
-                self.size.y = self.screen_size[1]
         
-        self.surface = pygame.Surface(self.size.toarray())
+        self.rotation = numpy.deg2rad(rotation)
+        self.sin = numpy.sin(rotation)
+        self.cos = numpy.cos(rotation)
+
         self.col = col
-        self.surface.fill(col)
-        self.rect = self.surface.get_rect()
+
+        self.sprite_type = sprite_type
+        if self.sprite_type == CustomSprite.TYPE_CIRCLE:
+            self.radius = dimensions
+        elif self.sprite_type == CustomSprite.TYPE_POLYGON:
+            self.vertices = dimensions
+
 
         self.set_cartesian_pos(pos)
         if type(pos.x) == float:
@@ -60,44 +65,50 @@ class CustomSprite(pygame.sprite.Sprite):
 
         self.components: List[Component] = []
 
-    def set_anchor(self, anchor):
-        self.anchor = anchor
-        anchor_x = Anchors.MASK_X & self.anchor
-        anchor_y = Anchors.MASK_Y & self.anchor
+    @classmethod
+    def create_rectangular_sprite(cls, pos, size, col, scr_size, rot = 0, anchor = Anchors.CENTER_X|Anchors.CENTER_Y):
+        vertices = [
+            Vector2(-size.x//2, -size.y//2),
+            Vector2(-size.x//2, size.y//2),
+            Vector2(size.x//2, size.y//2),
+            Vector2(size.x//2, -size.y//2)
+        ]
+        return cls(pos, vertices, col, scr_size, anchor, CustomSprite.TYPE_POLYGON, rot)
 
-        if anchor_x == Anchors.LEFT_X:
-            offset_x = 0
-        elif anchor_x == Anchors.CENTER_X:
-            offset_x = -self.size.x//2
-        else:
-            offset_x = -self.size.x
+    @property
+    def true_vertices(self):
+        if self.sprite_type == CustomSprite.TYPE_POLYGON:
+            output = []
+            for vert in self.vertices:
+                rx = self.cos * vert.x - self.sin * vert.y
+                ry = self.sin * vert.x + self.cos * vert.y
 
-        if anchor_y == Anchors.TOP_Y:
-            offset_y = 0
-        elif anchor_y == Anchors.CENTER_Y:
-            offset_y = -self.size.y//2
-        else:
-            offset_y = -self.size.y
-
-        self.rect.left = self.pos.x + offset_x
-        self.rect.top = self.pos.y + offset_y
+                screen_coords = coordinate.conversions.cartesian_to_pygame(rx + self.cartesian_pos.x, ry + self.cartesian_pos.y, *self.screen_size.toarray())
+                output.append([int(i) for i in screen_coords])
+            return output
 
     def set_position(self, pos: Vector2):
         self.pos = pos
         self.cartesian_pos = Vector2(*coordinate.conversions.pygame_to_cartesian(*pos.toarray(), *self.screen_size.toarray()))
-        self.set_anchor(self.anchor)
         for callback in self.pos_changed:
             callback()
 
     def set_cartesian_pos(self, pos: Vector2):
         self.cartesian_pos = pos
         self.pos = Vector2(*coordinate.conversions.cartesian_to_pygame(*pos.toarray(), *self.screen_size.toarray()))
-        self.set_anchor(self.anchor)
         for callback in self.pos_changed:
             callback()
 
     def move_cartesian_pos(self, amount: Vector2):
         self.set_cartesian_pos(self.cartesian_pos + amount)
+
+    def set_rotation(self, rotation):
+        self.rotation = numpy.deg2rad(rotation)
+        self.sin = numpy.sin(rotation)
+        self.cos = numpy.cos(rotation)
+
+    def rotate(self, amount):
+        self.set_rotation(numpy.rad2deg(self.rotation) + amount)
 
     def tick(self):
         for component in self.components:
