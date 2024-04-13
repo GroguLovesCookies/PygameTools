@@ -59,7 +59,7 @@ class Collider(Component):
             restitution = min(rb1.restitution, rb2.restitution)
 
             rel_dot_normal = (rb2.linear_velocity - rb1.linear_velocity).dot(normal)
-            if rel_dot_normal > 0:
+            if rel_dot_normal >= 0:
                 return
 
             j = -(1 + restitution) * rel_dot_normal

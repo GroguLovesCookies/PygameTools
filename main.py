@@ -30,48 +30,25 @@ platform.add_component(RigidBodyComponent, 2, 0.7, Vector2(800, 40), RigidBodyCo
 colliders.append(platform.add_component(PolygonCollider, colliders))
 world.add_body(platform)
 
+player = CustomSprite.create_image_sprite(Vector2(0, 0), "images/sample.png", SIZE)
+player.add_component(RigidBodyComponent, 2, 0, player.shape_AABB.size, RigidBodyComponent.TYPE_BOX, False)
+colliders.append(player.add_component(PolygonCollider, colliders))
+world.add_body(player)
 
 running = True
 while running:
     for e in pygame.event.get():
         if e.type == pygame.QUIT:
             running = False
-        elif e.type == pygame.MOUSEBUTTONDOWN:
-            size = random.randrange(20, 40)
-            pos = coordinate.conversions.pygame_to_cartesian(*e.pos, *SIZE.toarray())
-            if e.button == 1:
-                s = CustomSprite.create_rectangular_sprite(Vector2(*pos), Vector2(size, size), [
-                    random.randrange(0, 255),
-                    random.randrange(0, 255),
-                    random.randrange(0, 255)
-                ],
-                SIZE, 0)
-                colliders.append(s.add_component(PolygonCollider, colliders))
-            elif e.button == 3:
-                s = CustomSprite(Vector2(*pos), size//2, [
-                    random.randrange(0, 255),
-                    random.randrange(0, 255),
-                    random.randrange(0, 255)
-                ],
-                SIZE, sprite_type=CustomSprite.TYPE_CIRCLE)
-                colliders.append(s.add_component(CircleCollider, colliders, size//2))
-            s.add_component(RigidBodyComponent, 2, 0.7, Vector2(size, size), RigidBodyComponent.TYPE_BOX, False)
-            s.add_component(DestroyOffscreen, world, SIZE)
-            world.add_body(s)
-        
 
     screen.fill((200, 200, 200))
 
     handler.update()
 
     world.tick(1/FPS)
-    print(len(world.bodies))
 
     for sprite in world.bodies:
-        if sprite.sprite_type == CustomSprite.TYPE_CIRCLE:
-            pygame.draw.circle(screen, sprite.col, sprite.pos.toarray(), sprite.radius)
-        else:
-            pygame.draw.polygon(screen, sprite.col, sprite.true_vertices())
+        sprite.draw(screen)
 
     pygame.display.update()
 

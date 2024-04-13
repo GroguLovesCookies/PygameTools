@@ -5,6 +5,7 @@ from components.component import Component
 from typing import List
 import numpy
 from classes.aabb import AABB
+from image import *
 
 
 class Anchors:
@@ -44,6 +45,7 @@ class CustomSprite(pygame.sprite.Sprite):
         self.cos = numpy.cos(rotation)
 
         self.col = col
+        self.img = None
 
         self.sprite_type = sprite_type
         if self.sprite_type == CustomSprite.TYPE_CIRCLE:
@@ -65,6 +67,16 @@ class CustomSprite(pygame.sprite.Sprite):
             ))
 
         self.components: List[Component] = []
+
+    @classmethod
+    def create_image_sprite(cls, pos, img, scr_size, rot = 0, anchor = Anchors.CENTER_X|Anchors.CENTER_Y):
+        texture = image_from_file(img)
+        rect = texture.get_rect()
+        size = Vector2(*rect.size)
+
+        sprite = CustomSprite.create_rectangular_sprite(pos, size, (0, 0, 0), scr_size, rot, anchor)
+        sprite.img = texture
+        return sprite
 
     @classmethod
     def create_rectangular_sprite(cls, pos, size, col, scr_size, rot = 0, anchor = Anchors.CENTER_X|Anchors.CENTER_Y):
@@ -192,4 +204,13 @@ class CustomSprite(pygame.sprite.Sprite):
             if type(component) == component_type:
                 return component
         return
-            
+    
+    def draw(self, screen):
+        if self.img is not None:
+            rect = self.img.get_rect()
+            rect.center = self.pos.toarray()
+            screen.blit(self.img, rect)
+        elif self.sprite_type == CustomSprite.TYPE_CIRCLE:
+            pygame.draw.circle(screen, self.col, self.pos.toarray(), self.radius)
+        else:
+            pygame.draw.polygon(screen, self.col, self.true_vertices())
