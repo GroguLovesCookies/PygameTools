@@ -4,6 +4,7 @@ from vector.vector import Vector2
 from components.component import Component
 from typing import List
 import numpy
+from classes.aabb import AABB
 
 
 class Anchors:
@@ -88,6 +89,31 @@ class CustomSprite(pygame.sprite.Sprite):
                 except:
                     output.append((0, 0))
             return output
+
+    @property
+    def shape_AABB(self) -> AABB:
+        minX = minY = 10000000000000000
+        maxX = maxY = -10000000000000000
+
+        if self.sprite_type == CustomSprite.TYPE_CIRCLE:
+            minX = self.cartesian_pos.x - self.radius
+            maxX = self.cartesian_pos.x + self.radius
+            minY = self.cartesian_pos.y - self.radius
+            maxY = self.cartesian_pos.y + self.radius
+        elif self.sprite_type == CustomSprite.TYPE_POLYGON:
+            for vert in self.cartesian_vertices:
+                if vert.x < minX:
+                    minX = vert.x
+                elif vert.x > maxX:
+                    maxX = vert.x
+                
+                if vert.y < minY:
+                    minY = vert.y
+                if vert.y > maxY:
+                    maxY = vert.y
+
+
+        return AABB(Vector2(minX, minY), Vector2(maxX, maxY))
 
     @property
     def cartesian_vertices(self):

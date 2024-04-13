@@ -4,6 +4,7 @@ from vector.vector import Vector2
 from components.rigid_body import RigidBodyComponent
 from components.circle_collider import CircleCollider
 from components.polygon_collider import PolygonCollider
+from components.destroy_offscreen import DestroyOffscreen
 import coordinate.conversions
 import random
 from input_handler import InputHandler
@@ -18,8 +19,6 @@ pygame.init()
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode(SIZE.toarray())
 pygame.display.set_caption("Pygame Utils")
-sprites = pygame.sprite.Group()
-rects = pygame.sprite.Group()
 colliders = []
 
 handler = InputHandler()
@@ -30,7 +29,6 @@ platform = CustomSprite.create_rectangular_sprite(Vector2(0, -280), Vector2(800,
 platform.add_component(RigidBodyComponent, 2, 0.7, Vector2(800, 40), RigidBodyComponent.TYPE_BOX, True)
 colliders.append(platform.add_component(PolygonCollider, colliders))
 world.add_body(platform)
-sprites.add(platform)
 
 
 running = True
@@ -58,8 +56,8 @@ while running:
                 SIZE, sprite_type=CustomSprite.TYPE_CIRCLE)
                 colliders.append(s.add_component(CircleCollider, colliders, size//2))
             s.add_component(RigidBodyComponent, 2, 0.7, Vector2(size, size), RigidBodyComponent.TYPE_BOX, False)
+            s.add_component(DestroyOffscreen, world, SIZE)
             world.add_body(s)
-            sprites.add(s)
         
 
     screen.fill((200, 200, 200))
@@ -67,8 +65,9 @@ while running:
     handler.update()
 
     world.tick(1/FPS)
+    print(len(world.bodies))
 
-    for sprite in sprites:
+    for sprite in world.bodies:
         if sprite.sprite_type == CustomSprite.TYPE_CIRCLE:
             pygame.draw.circle(screen, sprite.col, sprite.pos.toarray(), sprite.radius)
         else:
