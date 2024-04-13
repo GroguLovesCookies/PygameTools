@@ -87,6 +87,29 @@ class CustomSprite(pygame.sprite.Sprite):
                 output.append([int(i) for i in screen_coords])
             return output
 
+    @property
+    def cartesian_vertices(self):
+        if self.sprite_type == CustomSprite.TYPE_POLYGON:
+            output = []
+            for vert in self.vertices:
+                rx = self.cos * vert.x - self.sin * vert.y
+                ry = self.sin * vert.x + self.cos * vert.y
+
+                coords = Vector2(rx + self.cartesian_pos.x, ry + self.cartesian_pos.y)
+                output.append(coords)
+            return output
+
+    @property
+    def edge_normals(self):
+        normals = []
+        for i, vert in enumerate(self.cartesian_vertices):
+
+            next_vert = self.cartesian_vertices[(i+1) % len(self.vertices)]
+            edge = next_vert - vert
+            normals.append(Vector2(-edge.y, edge.x))
+        return normals
+
+
     def set_position(self, pos: Vector2):
         self.pos = pos
         self.cartesian_pos = Vector2(*coordinate.conversions.pygame_to_cartesian(*pos.toarray(), *self.screen_size.toarray()))
