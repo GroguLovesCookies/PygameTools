@@ -75,7 +75,6 @@ class CustomSprite(pygame.sprite.Sprite):
         ]
         return cls(pos, vertices, col, scr_size, anchor, CustomSprite.TYPE_POLYGON, rot)
 
-    @property
     def true_vertices(self):
         if self.sprite_type == CustomSprite.TYPE_POLYGON:
             output = []
@@ -84,7 +83,10 @@ class CustomSprite(pygame.sprite.Sprite):
                 ry = self.sin * vert.x + self.cos * vert.y
 
                 screen_coords = coordinate.conversions.cartesian_to_pygame(rx + self.cartesian_pos.x, ry + self.cartesian_pos.y, *self.screen_size.toarray())
-                output.append([int(i) for i in screen_coords])
+                try:
+                    output.append([int(i) for i in screen_coords])
+                except:
+                    output.append((0, 0))
             return output
 
     @property

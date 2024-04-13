@@ -4,8 +4,7 @@ import numpy
 
 
 class RigidBodyComponent(Component):
-    FPS = 60
-    GRAVITY = -9.8/FPS
+    GRAVITY = Vector2(0, -120)
 
     COMPONENT_INDEX = 0
 
@@ -32,7 +31,7 @@ class RigidBodyComponent(Component):
             self.radius = dimensions
             self.get_circle_data()
         else:
-            self.width, self.height = dimensions
+            self.width, self.height = dimensions.toarray()
             self.get_box_data()
 
         self.mass = self.density * self.area
@@ -45,7 +44,9 @@ class RigidBodyComponent(Component):
         self.area = self.width * self.height
 
     def tick(self, time):
-        self.linear_velocity += (self.force* (1/self.mass)) * time
+        if not self.static:
+            self.linear_velocity += self.GRAVITY * (1/60)
+            # self.linear_velocity += (self.force * self.inv_mass) * time
 
         self.parent.move_cartesian_pos(self.linear_velocity * time)
         self.parent.rotate(self.rotational_velocity * time)

@@ -26,26 +26,11 @@ handler = InputHandler()
 
 world = World()
 
-player = CustomSprite(Vector2(0, 0), 20, (0, 0, 100), SIZE, Anchors.CENTER_X|Anchors.CENTER_Y, CustomSprite.TYPE_CIRCLE)
-rb = player.add_component(RigidBodyComponent, 2, 2, 1, RigidBodyComponent.TYPE_CIRCLE, False)
-colliders.append(player.add_component(CircleCollider, colliders, 20))
-sprites.add(player)
-world.add_body(player)
-
-for _ in range(10):
-    if random.random() > 0.5:
-        s = CustomSprite.create_rectangular_sprite(Vector2(random.randrange(-350, 350), random.randrange(-250, 250)), Vector2(40, 40), [0, 100, 0], SIZE, random.randrange(0, 360))
-        rb2 = s.add_component(RigidBodyComponent, 2, 2, 1, RigidBodyComponent.TYPE_CIRCLE, random.random() > 0.5)
-        colliders.append(s.add_component(PolygonCollider, colliders))
-        sprites.add(s)
-        rects.add(s)
-    else:
-        s = CustomSprite(Vector2(random.randrange(-350, 350), random.randrange(-250, 250)), 20, [0, 100, 0], SIZE, sprite_type=CustomSprite.TYPE_CIRCLE)
-        s.add_component(RigidBodyComponent, 2, 2, 1, RigidBodyComponent.TYPE_CIRCLE, random.random() > 0.5)
-        colliders.append(s.add_component(CircleCollider, colliders, 20))
-        sprites.add(s)
-        rects.add(s)
-    world.add_body(s)
+platform = CustomSprite.create_rectangular_sprite(Vector2(0, -280), Vector2(800, 40), (0, 100, 0), SIZE)
+platform.add_component(RigidBodyComponent, 2, 0.7, Vector2(800, 40), RigidBodyComponent.TYPE_BOX, True)
+colliders.append(platform.add_component(PolygonCollider, colliders))
+world.add_body(platform)
+sprites.add(platform)
 
 
 running = True
@@ -53,13 +38,33 @@ while running:
     for e in pygame.event.get():
         if e.type == pygame.QUIT:
             running = False
+        elif e.type == pygame.MOUSEBUTTONDOWN:
+            size = random.randrange(20, 40)
+            pos = coordinate.conversions.pygame_to_cartesian(*e.pos, *SIZE.toarray())
+            if e.button == 1:
+                s = CustomSprite.create_rectangular_sprite(Vector2(*pos), Vector2(size, size), [
+                    random.randrange(0, 255),
+                    random.randrange(0, 255),
+                    random.randrange(0, 255)
+                ],
+                SIZE, 0)
+                colliders.append(s.add_component(PolygonCollider, colliders))
+            elif e.button == 3:
+                s = CustomSprite(Vector2(*pos), size//2, [
+                    random.randrange(0, 255),
+                    random.randrange(0, 255),
+                    random.randrange(0, 255)
+                ],
+                SIZE, sprite_type=CustomSprite.TYPE_CIRCLE)
+                colliders.append(s.add_component(CircleCollider, colliders, size//2))
+            s.add_component(RigidBodyComponent, 2, 0.7, Vector2(size, size), RigidBodyComponent.TYPE_BOX, False)
+            world.add_body(s)
+            sprites.add(s)
         
 
-    screen.fill((0, 0, 0))
+    screen.fill((200, 200, 200))
 
     handler.update()
-    
-    rb.force = handler.get_normalized_axis() * 10 * FPS
 
     world.tick(1/FPS)
 
@@ -67,7 +72,7 @@ while running:
         if sprite.sprite_type == CustomSprite.TYPE_CIRCLE:
             pygame.draw.circle(screen, sprite.col, sprite.pos.toarray(), sprite.radius)
         else:
-            pygame.draw.polygon(screen, sprite.col, sprite.true_vertices)
+            pygame.draw.polygon(screen, sprite.col, sprite.true_vertices())
 
     pygame.display.update()
 
