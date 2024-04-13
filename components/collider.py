@@ -56,6 +56,14 @@ class Collider(Component):
             if second_was_static:
                 self.parent.move_cartesian_pos((-normal*0.5)*depth)
 
+            restitution = min(rb1.restitution, rb2.restitution)
+
+            j = -(1 + restitution) * (rb2.linear_velocity - rb1.linear_velocity).dot(normal)
+            j /= (1/rb1.mass) + (1/rb2.mass)
+
+            rb1.linear_velocity -= (j / rb1.mass) * normal
+            rb2.linear_velocity += (j / rb2.mass) * normal
+
                 
 
     def late_tick(self, time):

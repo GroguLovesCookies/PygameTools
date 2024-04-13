@@ -25,6 +25,8 @@ class RigidBodyComponent(Component):
         self.restitution = restitution
         self.static = static
 
+        self.force = Vector2(0, 0)
+
         self.body_type = body_type
         if body_type == RigidBodyComponent.TYPE_CIRCLE:
             self.radius = dimensions
@@ -42,5 +44,12 @@ class RigidBodyComponent(Component):
         self.area = self.width * self.height
 
     def tick(self, time):
+        self.linear_velocity += (self.force* (1/self.mass)) * time
+
         self.parent.move_cartesian_pos(self.linear_velocity * time)
         self.parent.rotate(self.rotational_velocity * time)
+
+        self.force = Vector2(0, 0)
+
+    def add_force(self, amount):
+        self.force = amount

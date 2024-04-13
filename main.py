@@ -35,14 +35,14 @@ world.add_body(player)
 for _ in range(10):
     if random.random() > 0.5:
         s = CustomSprite.create_rectangular_sprite(Vector2(random.randrange(-350, 350), random.randrange(-250, 250)), Vector2(40, 40), [0, 100, 0], SIZE, random.randrange(0, 360))
-        rb2 = s.add_component(RigidBodyComponent, 2, 0, 1, RigidBodyComponent.TYPE_CIRCLE, False)
+        rb2 = s.add_component(RigidBodyComponent, 50, 0, 1, RigidBodyComponent.TYPE_CIRCLE, False)
         rb2.rotational_velocity = random.randrange(-10, 10)
         colliders.append(s.add_component(PolygonCollider, colliders))
         sprites.add(s)
         rects.add(s)
     else:
         s = CustomSprite(Vector2(random.randrange(-350, 350), random.randrange(-250, 250)), 20, [0, 100, 0], SIZE, sprite_type=CustomSprite.TYPE_CIRCLE)
-        s.add_component(RigidBodyComponent, 2, 0, 1, RigidBodyComponent.TYPE_CIRCLE, False)
+        s.add_component(RigidBodyComponent, 50, 0, 1, RigidBodyComponent.TYPE_CIRCLE, False)
         colliders.append(s.add_component(CircleCollider, colliders, 20))
         sprites.add(s)
         rects.add(s)
