@@ -11,9 +11,9 @@ import coordinate.conversions
 import random
 from input_handler import InputHandler
 from world import World
-from camera import Camera
+from camera import Camera, Background
 from classes.aabb import AABB
-from image import Spritesheet
+from image import Spritesheet, image_from_file
 
 
 SIZE = Vector2(800, 600)
@@ -29,9 +29,16 @@ colliders = []
 handler = InputHandler()
 
 world = World()
-camera = Camera(Vector2(0, 0), AABB(Vector2(-1000000000000000000000000000, 0), Vector2(1000000000000000000000000, 10000)), SIZE)
 
-platform = CustomSprite.create_rectangular_sprite(Vector2(0, -280), Vector2(800, 40), (0, 100, 0), SIZE)
+backgrounds = [
+    Background("images/background1.png", 50, SIZE.toarray()),
+    Background("images/background3.png", 15),
+    Background("images/background2.png", 5, (SIZE/3).toarray()),
+]
+camera = Camera(Vector2(0, 0), AABB(Vector2(-1000000000000000000000000000, 0), Vector2(1000000000000000000000000, 10000)), SIZE, 
+            backgrounds)
+
+platform = CustomSprite.create_rectangular_sprite(Vector2(0, -280), Vector2(20000, 40), (0, 100, 0), SIZE)
 platform.add_component(RigidBodyComponent, 2, 0.7, Vector2(800, 40), RigidBodyComponent.TYPE_BOX, True)
 colliders.append(platform.add_component(PolygonCollider, colliders))
 world.add_body(platform)
@@ -58,8 +65,8 @@ while running:
         else:
             handler.register_key_event(e)
 
-
-    screen.fill((200, 200, 200))
+    screen.fill((0, 0, 100))
+    camera.draw_backgrounds(screen)
 
     world.tick(1/FPS)
     camera.move_to(player.pos, 10)
