@@ -75,7 +75,8 @@ class Collider(Component):
             rb1.linear_velocity -= j * rb1.inv_mass * normal
             rb2.linear_velocity += j * rb2.inv_mass * normal
 
-                
+    def collides_with_line(self, source: Vector2, direction: Vector2, length: float) -> bool:
+        return True
 
     def late_tick(self, time):
         ...
