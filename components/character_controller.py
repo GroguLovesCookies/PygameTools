@@ -17,6 +17,10 @@ class CharacterController(Component):
 
     def tick(self, time):
         self.rb.linear_velocity.x = InputHandler.Instance.get_axis_x() * self.speed
+        if self.rb.linear_velocity.x < 0:
+            self.parent.flip = True
+        elif self.rb.linear_velocity.x > 0:
+            self.parent.flip = False
 
         if InputHandler.Instance.get_key_down(pygame.K_SPACE):
             self.rb.add_force(Vector2(0, self.jump_power))

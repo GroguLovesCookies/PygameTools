@@ -47,6 +47,8 @@ class CustomSprite(pygame.sprite.Sprite):
         self.col = col
         self.img = None
 
+        self.flip = False
+
         self.sprite_type = sprite_type
         if self.sprite_type == CustomSprite.TYPE_CIRCLE:
             self.radius = dimensions
@@ -210,6 +212,8 @@ class CustomSprite(pygame.sprite.Sprite):
 
         if self.img is not None:
             new_img = pygame.transform.rotate(self.img, numpy.rad2deg(self.rotation))
+            if self.flip:
+                new_img = pygame.transform.flip(new_img, True, False)
             rect = new_img.get_rect()
             rect.center = true_pos.toarray()
             screen.blit(new_img, rect)
