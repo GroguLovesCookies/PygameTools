@@ -5,15 +5,15 @@ import pygame
 class SpritesheetReader:
     def __init__(self, filename):
         try:
-            self.sheet = pygame.image.load(filename).convert_alpha()
-        except (pygame.error, message):
+            self.sheet = pygame.image.load(filename)
+        except (pygame.error, msg):
             print('Unable to load spritesheet image:', filename)
-            raise(SystemExit, message)
+            raise(SystemExit)
     # Load a specific image from a specific rectangle
     def image_at(self, rectangle, colorkey = None):
         "Loads image from x,y,x+offset,y+offset"
         rect = pygame.Rect(rectangle)
-        image = pygame.Surface(rect.size).convert_alpha()
+        image = pygame.Surface(rect.size)
         image.blit(self.sheet, (0, 0), rect)
         if colorkey is not None:
             if colorkey == -1:

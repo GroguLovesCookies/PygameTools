@@ -45,7 +45,6 @@ colliders.append(platform.add_component(PolygonCollider, colliders))
 world.add_body(platform)
 
 player_sheet = Spritesheet.sheet_from_json_file("images/sheets/samplesheet_data.json")
-
 player = CustomSprite.create_image_sprite(Vector2(0, 0), "idle", SIZE, sheet=player_sheet)
 anim = player.add_component(Animator.from_json, "images/animators/player_animator.json")
 rb = player.add_component(RigidBodyComponent, 1, 0, player.shape_AABB.size, RigidBodyComponent.TYPE_BOX, False)
