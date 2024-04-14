@@ -5,6 +5,7 @@ from components.rigid_body import RigidBodyComponent
 from components.circle_collider import CircleCollider
 from components.polygon_collider import PolygonCollider
 from components.destroy_offscreen import DestroyOffscreen
+from components.character_controller import CharacterController
 import coordinate.conversions
 import random
 from input_handler import InputHandler
@@ -38,6 +39,7 @@ rb = player.add_component(RigidBodyComponent, 1, 0, player.shape_AABB.size, Rigi
 rb.mass = 1
 rb.inv_mass = 1
 colliders.append(player.add_component(PolygonCollider, colliders))
+player.add_component(CharacterController, 3, 7)
 world.add_body(player)
 
 running = True
@@ -55,13 +57,6 @@ while running:
 
     world.tick(1/FPS)
     camera.move_to(player.pos, 10)
-
-
-    if handler.get_key_down(pygame.K_SPACE):
-        rb.add_force(Vector2(0, 5))
-
-
-    rb.linear_velocity.x = 3 * handler.get_axis_x()
 
     for sprite in world.bodies:
         sprite.draw(screen, camera)

@@ -23,12 +23,15 @@ class InputHandler:
         UP: "Axis",
         DOWN: "Axis"
     }
+
+    Instance = None
     
     def __init__(self, binds = DEFAULTS):
         self.binds = binds
         self.state = {"Axis": Vector2(0, 0)}
         self.pressed = []
         self.released = []
+        InputHandler.Instance = self
 
     def update(self):
         self.pressed.clear()
