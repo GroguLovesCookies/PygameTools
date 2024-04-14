@@ -27,13 +27,29 @@ class InputHandler:
     def __init__(self, binds = DEFAULTS):
         self.binds = binds
         self.state = {"Axis": Vector2(0, 0)}
+        self.pressed = []
+        self.released = []
 
     def update(self):
+        self.pressed.clear()
+        self.released.clear()
         self.state = {"Axis": Vector2(0, 0)}
         for key, category in self.DEFAULTS.items():
             key_states = pygame.key.get_pressed()
             if key_states[key.primary] or key_states[key.secondary]:
                 self.state[category] += key.value
+        
+    def register_key_event(self, e):
+        if e.type == pygame.KEYDOWN and e.key not in self.pressed:
+            self.pressed.append(e.key)
+        elif e.type == pygame.KEYUP and e.key not in self.released:
+            self.released.append(e.key)
+
+    def get_key_down(self, code):
+        return code in self.pressed
+
+    def get_key_up(self, code):
+        return code in self.released
     
     def get_axis(self):
         return self.state["Axis"]

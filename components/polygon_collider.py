@@ -59,7 +59,6 @@ class PolygonCollider(Collider):
         if normal.dot(centers) < 0:
             normal = -normal
 
-        print(depth, normal.magnitude)
         return normal.normalized, depth
             
     @staticmethod

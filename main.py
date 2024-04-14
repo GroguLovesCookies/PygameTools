@@ -33,7 +33,7 @@ platform.add_component(RigidBodyComponent, 2, 0.7, Vector2(800, 40), RigidBodyCo
 colliders.append(platform.add_component(PolygonCollider, colliders))
 world.add_body(platform)
 
-player = CustomSprite.create_image_sprite(Vector2(0, 0), "images/sample.png", SIZE, 90)
+player = CustomSprite.create_image_sprite(Vector2(0, 0), "images/sample.png", SIZE)
 rb = player.add_component(RigidBodyComponent, 1, 0, player.shape_AABB.size, RigidBodyComponent.TYPE_BOX, False)
 rb.mass = 1
 rb.inv_mass = 1
@@ -42,19 +42,23 @@ world.add_body(player)
 
 running = True
 while running:
+    handler.update()
+
     for e in pygame.event.get():
         if e.type == pygame.QUIT:
             running = False
-        elif e.type == pygame.KEYDOWN:
-            if e.key == pygame.K_SPACE:
-                rb.add_force(Vector2(0, 5))
+        else:
+            handler.register_key_event(e)
 
 
     screen.fill((200, 200, 200))
 
     world.tick(1/FPS)
-    handler.update()
     camera.move_to(player.pos, 10)
+
+
+    if handler.get_key_down(pygame.K_SPACE):
+        rb.add_force(Vector2(0, 5))
 
 
     rb.linear_velocity.x = 3 * handler.get_axis_x()
