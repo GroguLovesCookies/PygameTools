@@ -25,6 +25,14 @@ class Collider(Component):
         for collider in self.colliders:
             if collider.id == self.id:
                 continue
+            
+            boundsA = self.parent.shape_AABB
+            boundsB = collider.parent.shape_AABB
+
+            if boundsA.min.x > boundsB.max.x or boundsA.max.x < boundsB.min.x or boundsA.min.y > boundsB.max.y or boundsA.max.y < boundsB.min.y:
+                print("Skipping Collision Check")
+                continue
+
             collision = self.is_colliding(collider)
             if collision is not None:
                 return *collision, collider

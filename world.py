@@ -5,7 +5,9 @@ from vector.vector import Vector2
 class World:
     def __init__(self):
         self.gravity = Vector2(0, 9.81)
+        self.chunk_size = 64
         self.bodies = []
+        self.chunks = {}
 
 
     def add_body(self, body):
