@@ -21,9 +21,9 @@ class CharacterController(Component):
     def tick(self, time):
         self.rb.linear_velocity.x = InputHandler.Instance.get_axis_x() * self.speed
         if self.rb.linear_velocity.x < 0:
-            self.parent.flip = True
-        elif self.rb.linear_velocity.x > 0:
             self.parent.flip = False
+        elif self.rb.linear_velocity.x > 0:
+            self.parent.flip = True
 
         hit = cast_ray(self.parent.cartesian_pos, Vector2(0, -1), self.parent.shape_AABB.size.y//2 + 10, self.collider.colliders, [self.collider])
 

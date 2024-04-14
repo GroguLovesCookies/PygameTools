@@ -70,14 +70,24 @@ class CustomSprite(pygame.sprite.Sprite):
 
         self.components: List[Component] = []
 
+    def set_texture(self, texture):
+        self.img = texture
+
     @classmethod
-    def create_image_sprite(cls, pos, img, scr_size, rot = 0, anchor = Anchors.CENTER_X|Anchors.CENTER_Y):
-        texture = image_from_file(img)
+    def create_image_sprite(cls, pos, img, scr_size, rot = 0, anchor = Anchors.CENTER_X|Anchors.CENTER_Y, sheet = None):
+        if sheet is None:
+            texture = image_from_file(img)
+        else:
+            texture = sheet.image_with_name(img)
+
+        texture = texture.convert_alpha()
+
         rect = texture.get_rect()
         size = Vector2(*rect.size)
-
+        
         sprite = CustomSprite.create_rectangular_sprite(pos, size, (0, 0, 0), scr_size, rot, anchor)
-        sprite.img = texture
+        sprite.set_texture(texture)
+        sprite.sheet = sheet
         return sprite
 
     @classmethod

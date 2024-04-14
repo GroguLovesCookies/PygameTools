@@ -12,6 +12,7 @@ from input_handler import InputHandler
 from world import World
 from camera import Camera
 from classes.aabb import AABB
+from image import Spritesheet
 
 
 SIZE = Vector2(800, 600)
@@ -34,7 +35,8 @@ platform.add_component(RigidBodyComponent, 2, 0.7, Vector2(800, 40), RigidBodyCo
 colliders.append(platform.add_component(PolygonCollider, colliders))
 world.add_body(platform)
 
-player = CustomSprite.create_image_sprite(Vector2(0, 0), "images/sample.png", SIZE)
+player_sheet = Spritesheet.sheet_from_json_file("images/sheets/samplesheet_data.json")
+player = CustomSprite.create_image_sprite(Vector2(0, 0), "walk1", SIZE, sheet=player_sheet)
 rb = player.add_component(RigidBodyComponent, 1, 0, player.shape_AABB.size, RigidBodyComponent.TYPE_BOX, False)
 rb.mass = 1
 rb.inv_mass = 1
