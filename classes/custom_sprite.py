@@ -209,9 +209,10 @@ class CustomSprite(pygame.sprite.Sprite):
         true_pos = self.pos + camera.scroll
 
         if self.img is not None:
-            rect = self.img.get_rect()
+            new_img = pygame.transform.rotate(self.img, numpy.rad2deg(self.rotation))
+            rect = new_img.get_rect()
             rect.center = true_pos.toarray()
-            screen.blit(self.img, rect)
+            screen.blit(new_img, rect)
         elif self.sprite_type == CustomSprite.TYPE_CIRCLE:
             pygame.draw.circle(screen, self.col, true_pos.toarray(), self.radius)
         else:

@@ -26,49 +26,41 @@ colliders = []
 handler = InputHandler()
 
 world = World()
+camera = Camera(Vector2(0, 0), AABB(Vector2(-1000000000000000000000000000, 0), Vector2(1000000000000000000000000, 10000)), SIZE)
 
 platform = CustomSprite.create_rectangular_sprite(Vector2(0, -280), Vector2(800, 40), (0, 100, 0), SIZE)
 platform.add_component(RigidBodyComponent, 2, 0.7, Vector2(800, 40), RigidBodyComponent.TYPE_BOX, True)
 colliders.append(platform.add_component(PolygonCollider, colliders))
 world.add_body(platform)
 
+player = CustomSprite.create_image_sprite(Vector2(0, 0), "images/sample.png", SIZE, 90)
+rb = player.add_component(RigidBodyComponent, 1, 0, player.shape_AABB.size, RigidBodyComponent.TYPE_BOX, False)
+rb.mass = 1
+rb.inv_mass = 1
+colliders.append(player.add_component(PolygonCollider, colliders))
+world.add_body(player)
 
 running = True
 while running:
     for e in pygame.event.get():
         if e.type == pygame.QUIT:
             running = False
-        elif e.type == pygame.MOUSEBUTTONDOWN:
-            size = random.randrange(20, 40)
-            pos = coordinate.conversions.pygame_to_cartesian(*e.pos, *SIZE.toarray())
-            if e.button == 1:
-                s = CustomSprite.create_rectangular_sprite(Vector2(*pos), Vector2(size, size), [
-                    random.randrange(0, 255),
-                    random.randrange(0, 255),
-                    random.randrange(0, 255)
-                ],
-                SIZE, 0)
-                colliders.append(s.add_component(PolygonCollider, colliders))
-            elif e.button == 3:
-                s = CustomSprite(Vector2(*pos), size//2, [
-                    random.randrange(0, 255),
-                    random.randrange(0, 255),
-                    random.randrange(0, 255)
-                ],
-                SIZE, sprite_type=CustomSprite.TYPE_CIRCLE)
-                colliders.append(s.add_component(CircleCollider, colliders, size//2))
-            s.add_component(RigidBodyComponent, 2, 0.7, Vector2(size, size), RigidBodyComponent.TYPE_BOX, False)
-            world.add_body(s)
+        elif e.type == pygame.KEYDOWN:
+            if e.key == pygame.K_SPACE:
+                rb.add_force(Vector2(0, 5))
 
 
     screen.fill((200, 200, 200))
 
-    handler.update()
-
     world.tick(1/FPS)
+    handler.update()
+    camera.move_to(player.pos, 10)
+
+
+    rb.linear_velocity.x = 3 * handler.get_axis_x()
 
     for sprite in world.bodies:
-        sprite.draw(screen, Camera(Vector2(0, 0), None, SIZE))
+        sprite.draw(screen, camera)
 
     pygame.display.update()
 

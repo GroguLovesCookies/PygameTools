@@ -12,6 +12,20 @@ class PolygonCollider(Collider):
             depth = 1000000000000000000000000000000
             normal = Vector2(0, 0)
             for axis in self.parent.edge_normals:
+                axis = axis.normalized
+                minA, maxA = PolygonCollider.project_vertices(self.parent.cartesian_vertices, axis)
+                minB, maxB = PolygonCollider.project_vertices(other.parent.cartesian_vertices, axis)
+
+                if(minA >= maxB or minB >= maxA):
+                    return None
+                
+                cur_depth = min(maxA - minB, maxB - minA)
+
+                if cur_depth < depth:
+                    depth = cur_depth
+                    normal = axis
+            for axis in other.parent.edge_normals:
+                axis = axis.normalized
                 minA, maxA = PolygonCollider.project_vertices(self.parent.cartesian_vertices, axis)
                 minB, maxB = PolygonCollider.project_vertices(other.parent.cartesian_vertices, axis)
 
@@ -45,6 +59,7 @@ class PolygonCollider(Collider):
         if normal.dot(centers) < 0:
             normal = -normal
 
+        print(depth, normal.magnitude)
         return normal.normalized, depth
             
     @staticmethod
