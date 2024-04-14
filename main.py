@@ -31,10 +31,10 @@ handler = InputHandler()
 world = World()
 
 backgrounds = [
-    Background("images/background4.png", 100, repeat=(True, True)),
-    Background("images/background1.png", 50, SIZE.toarray()),
-    Background("images/background3.png", 15),
-    Background("images/background2.png", 5, (SIZE/3).toarray())
+    Background(["images/background4.png"], 100, repeat=(True, True)),
+    Background(["images/background1.png"], 25, SIZE.toarray()),
+    Background(["images/background3.png"], 15),
+    Background(["images/background5.png", "images/background6.png"], 5, (SIZE/3).toarray())
 ]
 camera = Camera(Vector2(0, 0), AABB(Vector2(-1000000000000000000000000000, 0), Vector2(1000000000000000000000000, 10000)), SIZE, 
             backgrounds)

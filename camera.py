@@ -5,40 +5,43 @@ from vector.vector import Vector2
 
 
 class Background:
-    def __init__(self, img, parallax, stretch = (None, None), repeat = (True, False)):
-        self.img = image_from_file(img).convert_alpha()
+    def __init__(self, images, parallax, stretch = (None, None), repeat = (True, False)):
+        self.images = []
         self.parallax = parallax
 
-        if stretch[0] is not None:
-            self.img = pygame.transform.scale(self.img, (stretch[0], self.img.get_rect().height))
-        if stretch[1] is not None:
-            self.img = pygame.transform.scale(self.img, (self.img.get_rect().width, stretch[1]))
+        for image_path in images:
+            img = image_from_file(image_path).convert_alpha()
+            if stretch[0] is not None:
+                img = pygame.transform.scale(img, (stretch[0], img.get_rect().height))
+            if stretch[1] is not None:
+                img = pygame.transform.scale(img, (img.get_rect().width, stretch[1]))
+            self.images.append(img)
 
         self.repeat = repeat
 
     def draw(self, screen, size, scroll):
         if self.repeat[0]:
-            width = self.img.get_rect().width
+            width = self.images[0].get_rect().width
             num_to_draw = size.x//width + 2
-            print(num_to_draw)
             for i in range(-(num_to_draw - 1), num_to_draw - 1):
                 pos = scroll.x/self.parallax
-                pos += (i - pos//width) * width
-                self.draw_strip(pos, screen, size, scroll)
+                true_pos = (i - pos//width) * width + pos
+                self.draw_strip(true_pos, screen, size, scroll, int(i - pos//width + num_to_draw) % len(self.images))
         else:
             self.draw_strip(0, screen, size, scroll)
             
     
-    def draw_strip(self, pos_x, screen, size, scroll):
+    def draw_strip(self, pos_x, screen, size, scroll, sprite_to_use=0):
+        img = self.images[sprite_to_use]
         if not self.repeat[1]:
-            screen.blit(self.img, (pos_x, size.y - self.img.get_rect().height))
+            screen.blit(img, (pos_x, size.y - img.get_rect().height))
             return
 
-        height = self.img.get_rect().height
+        height = img.get_rect().height
         num_to_draw = size.x//height + 1
         for i in range(num_to_draw):
             pos_y = i * height
-            screen.blit(self.img, (pos_x, pos_y))
+            screen.blit(img, (pos_x, pos_y))
 
 
 class Camera:
