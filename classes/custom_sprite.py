@@ -71,7 +71,7 @@ class CustomSprite(pygame.sprite.Sprite):
         self.components: List[Component] = []
 
     def set_texture(self, texture):
-        self.img = texture
+        self.img = texture.convert_alpha()
 
     @classmethod
     def create_image_sprite(cls, pos, img, scr_size, rot = 0, anchor = Anchors.CENTER_X|Anchors.CENTER_Y, sheet = None):
@@ -80,7 +80,6 @@ class CustomSprite(pygame.sprite.Sprite):
         else:
             texture = sheet.image_with_name(img)
 
-        texture = texture.convert_alpha()
 
         rect = texture.get_rect()
         size = Vector2(*rect.size)
