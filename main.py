@@ -14,10 +14,12 @@ from world import World
 from camera import Camera, Background
 from classes.aabb import AABB
 from image import Spritesheet, image_from_file
+from tilemap.tile_palette import TilePalette
 
 
 SIZE = Vector2(800, 600)
 FPS = 60
+
 
 pygame.init()
 
@@ -27,6 +29,7 @@ pygame.display.set_caption("Pygame Utils")
 colliders = []
 
 handler = InputHandler()
+palette = TilePalette.from_json("images/palettes/world_palette.json")
 
 world = World()
 

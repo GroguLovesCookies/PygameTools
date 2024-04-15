@@ -56,3 +56,7 @@ class Spritesheet:
 
 def image_from_file(file):
     return pygame.image.load(file).convert_alpha()
+
+
+dirt_sheet = Spritesheet.sheet_from_png("images/stone.png", Vector2(16, 16), gap=Vector2(2, 2))
+dirt_sheet.save_to_json("images/sheets/stone_sheet.json")
