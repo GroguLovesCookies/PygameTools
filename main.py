@@ -15,6 +15,7 @@ from camera import Camera, Background
 from classes.aabb import AABB
 from image import Spritesheet, image_from_file
 from tilemap.tile_palette import TilePalette
+from tilemap.tilemap import Tilemap
 
 
 SIZE = Vector2(800, 600)
@@ -46,6 +47,16 @@ platform = CustomSprite.create_rectangular_sprite(Vector2(0, -280), Vector2(2000
 platform.add_component(RigidBodyComponent, 2, 0.7, Vector2(800, 40), RigidBodyComponent.TYPE_BOX, True)
 colliders.append(platform.add_component(PolygonCollider, colliders))
 world.add_body(platform)
+
+map_data = [[-1 for _ in range(502)] for _ in range(33)]
+map_data.append([(i//3)%2 - 1 for i in range(502)])
+map_data.append([49, *[(i % 3) + 1 for i in range(500)], 50])
+
+for _ in range(3):
+    map_data.append([15, *[(i%3)+16 for i in range(500)], 19])
+
+tilemap = Tilemap(Vector2(-250*16, 0), map_data, Vector2(16, 16), palette, SIZE)
+world.add_body(tilemap)
 
 player_sheet = Spritesheet.sheet_from_json_file("images/sheets/samplesheet_data.json")
 player = CustomSprite.create_image_sprite(Vector2(0, 0), "idle", SIZE, sheet=player_sheet)
