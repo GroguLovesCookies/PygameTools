@@ -6,6 +6,7 @@ from components.circle_collider import CircleCollider
 from components.polygon_collider import PolygonCollider
 from components.destroy_offscreen import DestroyOffscreen
 from components.character_controller import CharacterController
+from components.tilemap_collider import  TilemapCollider
 from components.animator import Animator
 import coordinate.conversions
 import random
@@ -48,16 +49,6 @@ platform.add_component(RigidBodyComponent, 2, 0.7, Vector2(800, 40), RigidBodyCo
 colliders.append(platform.add_component(PolygonCollider, colliders))
 world.add_body(platform)
 
-map_data = [[-1 for _ in range(502)] for _ in range(33)]
-map_data.append([(i//3)%2 - 1 for i in range(502)])
-map_data.append([49, *[(i % 3) + 1 for i in range(500)], 50])
-
-for _ in range(3):
-    map_data.append([15, *[(i%3)+16 for i in range(500)], 19])
-
-tilemap = Tilemap(Vector2(-250*16, 0), map_data, Vector2(16, 16), palette, SIZE)
-world.add_body(tilemap)
-
 player_sheet = Spritesheet.sheet_from_json_file("images/sheets/samplesheet_data.json")
 player = CustomSprite.create_image_sprite(Vector2(0, 0), "idle", SIZE, sheet=player_sheet)
 anim = player.add_component(Animator.from_json, "images/animators/player_animator.json")
@@ -65,8 +56,27 @@ rb = player.add_component(RigidBodyComponent, 1, 0, player.shape_AABB.size, Rigi
 rb.mass = 1
 rb.inv_mass = 1
 colliders.append(player.add_component(PolygonCollider, colliders))
-player.add_component(CharacterController, 3, 7, 2)
+player.add_component(CharacterController, 7, 7, 2)
 world.add_body(player)
+
+map_data = [[-1 for _ in range(502)] for _ in range(29)]
+
+map_data.append([15 for _ in range(502)])
+
+for _ in range(3):
+    map_data.append([-1 for _ in range(502)])
+
+map_data.append([(i//3)%2 - 1 for i in range(502)])
+
+map_data.append([49, *[(i % 3) + 1 for i in range(500)], 43])
+
+for _ in range(3):
+    map_data.append([15, *[(i%3)+16 for i in range(500)], 19])
+
+tilemap = Tilemap(Vector2(0, 0), map_data, Vector2(16, 16), palette, SIZE)
+colliders.append(tilemap.add_component(TilemapCollider, [colliders[1]], camera, SIZE, screen))
+world.add_body(tilemap)
+
 
 running = True
 frame = 0

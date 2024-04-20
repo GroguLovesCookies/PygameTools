@@ -28,7 +28,9 @@ class Vector2:
         return Vector2(self.x * other, self.y * other)
 
     def __truediv__(self, other):
-        return self * (1/other)
+        if type(other) == int:
+            return self * (1/other)
+        return Vector2(self.x/other.x, self.y/other.y)
         
 
     def __rmul__(self, other):

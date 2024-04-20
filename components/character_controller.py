@@ -21,7 +21,7 @@ class CharacterController(Component):
         self.jump_power = jump_power
 
         self.max_jumps = jumps
-        self.jumps = 0
+        self.jumps = jumps
 
     def tick(self, time):
         self.rb.linear_velocity.x = InputHandler.Instance.get_axis_x() * self.speed
@@ -39,7 +39,7 @@ class CharacterController(Component):
         if InputHandler.Instance.get_key_down(pygame.K_SPACE) and self.jumps > 0:
             self.rb.add_force(Vector2(0, self.jump_power))
             self.rb.linear_velocity = Vector2(0, 0)
-            self.jumps -= 1
+            # self.jumps -= 1
 
 
         if self.anim is not None:

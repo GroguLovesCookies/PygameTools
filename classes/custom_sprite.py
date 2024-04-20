@@ -118,6 +118,8 @@ class CustomSprite(pygame.sprite.Sprite):
         minX = minY = 10000000000000000
         maxX = maxY = -10000000000000000
 
+        if not hasattr(self, "sprite_type"):
+            return
         if self.sprite_type == CustomSprite.TYPE_CIRCLE:
             minX = self.cartesian_pos.x - self.radius
             maxX = self.cartesian_pos.x + self.radius
@@ -134,6 +136,32 @@ class CustomSprite(pygame.sprite.Sprite):
                     minY = vert.y
                 if vert.y > maxY:
                     maxY = vert.y
+
+
+        return AABB(Vector2(minX, minY), Vector2(maxX, maxY))
+
+    def screen_AABB(self, camera):
+        minX = minY = 10000000000000000
+        maxX = maxY = -10000000000000000
+
+        if not hasattr(self, "sprite_type"):
+            return
+        if self.sprite_type == CustomSprite.TYPE_CIRCLE:
+            minX = self.pos.x - self.radius
+            maxX = self.pos.x + self.radius
+            minY = self.pos.y - self.radius
+            maxY = self.pos.y + self.radius
+        elif self.sprite_type == CustomSprite.TYPE_POLYGON:
+            for vert in self.true_vertices(camera):
+                if vert[0] < minX:
+                    minX = vert[0]
+                elif vert[0] > maxX:
+                    maxX = vert[0]
+                
+                if vert[1] < minY:
+                    minY = vert[1]
+                if vert[1] > maxY:
+                    maxY = vert[1]
 
 
         return AABB(Vector2(minX, minY), Vector2(maxX, maxY))

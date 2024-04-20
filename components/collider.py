@@ -1,6 +1,7 @@
 from components.component import Component
 from components.rigid_body import RigidBodyComponent
 from vector.vector import Vector2
+from tilemap.tilemap import Tilemap
 
 
 class Collider(Component):
@@ -28,6 +29,9 @@ class Collider(Component):
             
             boundsA = self.parent.shape_AABB
             boundsB = collider.parent.shape_AABB
+
+            if type(collider.parent) == Tilemap:
+                return None, None, None
 
             if boundsA.min.x > boundsB.max.x or boundsA.max.x < boundsB.min.x or boundsA.min.y > boundsB.max.y or boundsA.max.y < boundsB.min.y:
                 continue
