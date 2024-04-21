@@ -48,6 +48,7 @@ class CustomSprite(pygame.sprite.Sprite):
         self.img = None
 
         self.flip = False
+        self.visible = True
 
         self.sprite_type = sprite_type
         if self.sprite_type == CustomSprite.TYPE_CIRCLE:
@@ -245,6 +246,8 @@ class CustomSprite(pygame.sprite.Sprite):
         return
     
     def draw(self, screen, camera):
+        if not self.visible:
+            return
         true_pos = self.pos + camera.scroll
 
         if self.img is not None:

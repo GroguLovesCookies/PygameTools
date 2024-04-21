@@ -59,6 +59,7 @@ class TilemapCollider(Component):
                 pos = Vector2(int(pos.x), int(pos.y))
                 
                 sprite = CustomSprite.create_rectangular_sprite(pos, self.parent.tile_size, (100, 0, 0), self.screen_size)
+                sprite.visible = False
                 sprite.add_component(RigidBodyComponent, 2, 0.7, Vector2(800, 40), RigidBodyComponent.TYPE_BOX, True)
                 coll = sprite.add_component(PolygonCollider, [collider])
                 for group in self.groups:
