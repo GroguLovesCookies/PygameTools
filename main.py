@@ -2,6 +2,7 @@ import pygame
 from classes.custom_sprite import CustomSprite, Anchors
 from vector.vector import Vector2
 from components.rigid_body import RigidBodyComponent
+from components.collider import ColliderGroup
 from components.circle_collider import CircleCollider
 from components.polygon_collider import PolygonCollider
 from components.destroy_offscreen import DestroyOffscreen
@@ -21,6 +22,9 @@ from tilemap.tilemap import Tilemap
 
 SIZE = Vector2(800, 600)
 FPS = 60
+
+
+ColliderGroup.add_group("Ground", [])
 
 
 pygame.init()
@@ -43,11 +47,6 @@ backgrounds = [
 ]
 camera = Camera(Vector2(0, 0), AABB(Vector2(-1000000000000000000000000000, 0), Vector2(1000000000000000000000000, 10000)), SIZE, 
             backgrounds)
-
-platform = CustomSprite.create_rectangular_sprite(Vector2(0, -280), Vector2(20000, 40), (0, 100, 0), SIZE)
-platform.add_component(RigidBodyComponent, 2, 0.7, Vector2(800, 40), RigidBodyComponent.TYPE_BOX, True)
-colliders.append(platform.add_component(PolygonCollider, colliders))
-world.add_body(platform)
 
 player_sheet = Spritesheet.sheet_from_json_file("images/sheets/samplesheet_data.json")
 player = CustomSprite.create_image_sprite(Vector2(0, 0), "idle", SIZE, sheet=player_sheet)
@@ -74,7 +73,9 @@ for _ in range(3):
     map_data.append([15, *[(i%3)+16 for i in range(500)], 19])
 
 tilemap = Tilemap(Vector2(0, 0), map_data, Vector2(16, 16), palette, SIZE)
-colliders.append(tilemap.add_component(TilemapCollider, [colliders[1]], camera, SIZE, screen))
+tilemap_collider = tilemap.add_component(TilemapCollider, [colliders[0]], camera, SIZE, screen)
+ColliderGroup.add_collider_to_group("Ground", tilemap_collider)
+colliders.append(tilemap_collider)
 world.add_body(tilemap)
 
 

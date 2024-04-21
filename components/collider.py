@@ -4,6 +4,47 @@ from vector.vector import Vector2
 from tilemap.tilemap import Tilemap
 
 
+class ColliderGroup:
+    groups = {}
+
+    @staticmethod
+    def add_group(name, colliders):
+        ColliderGroup.groups[name] = colliders
+
+    @staticmethod
+    def add_collider_to_group(name, collider):
+        if name in ColliderGroup.groups.keys():
+            ColliderGroup.groups[name].append(collider)
+            collider.groups.append(name)
+
+    @staticmethod
+    def remove_group(name):
+        if name in ColliderGroup.groups.keys():
+            for collider in ColliderGroup.groups[name]:
+                collider.groups.remove(name)
+            return ColliderGroup.groups.pop(name)
+    
+    @staticmethod
+    def remove_collider_from_group(name, collider):
+        if name in ColliderGroup.groups.keys() and collider in ColliderGroup.groups[name]:
+            collider.groups.remove(name)
+            ColliderGroup.groups[name].remove(collider)
+
+    @staticmethod
+    def get_group(name):
+        if name in ColliderGroup.groups.keys():
+            return ColliderGroup.groups[name]
+        return []
+
+    @staticmethod
+    def get_groups(*names):
+        out = []
+        for name in names:
+            out.extend(ColliderGroup.get_group(name))
+        
+        return out
+        
+
 class Collider(Component):
     COMPONENT_INDEX = 1
     Checked = []
@@ -14,6 +55,8 @@ class Collider(Component):
         self.offset = offset
         self.center = self.parent.cartesian_pos + self.offset
         self.parent.pos_changed.append(self.on_parent_pos_change)
+
+        self.groups = []
     
     def on_parent_pos_change(self):
         self.center = self.parent.cartesian_pos + self.offset

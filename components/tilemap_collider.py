@@ -1,5 +1,6 @@
 from components.component import Component
 from components.rigid_body import RigidBodyComponent
+from components.collider import ColliderGroup
 from components.polygon_collider import PolygonCollider
 from classes.aabb import AABB
 from vector.vector import Vector2
@@ -16,6 +17,8 @@ class TilemapCollider(Component):
         self.sprites = []
         self.screen_size = screen_size
         self.screen = screen
+        self.groups = []
+        self.colliders_created = []
 
 
     def is_colliding(self, other):
@@ -57,7 +60,11 @@ class TilemapCollider(Component):
                 
                 sprite = CustomSprite.create_rectangular_sprite(pos, self.parent.tile_size, (100, 0, 0), self.screen_size)
                 sprite.add_component(RigidBodyComponent, 2, 0.7, Vector2(800, 40), RigidBodyComponent.TYPE_BOX, True)
-                sprite.add_component(PolygonCollider, [collider])
+                coll = sprite.add_component(PolygonCollider, [collider])
+                for group in self.groups:
+                    ColliderGroup.add_collider_to_group(group, coll)
+
+                self.colliders_created.append(coll)
                 self.sprites.append(sprite)
                 
 
@@ -70,6 +77,9 @@ class TilemapCollider(Component):
         return None, None, None
 
     def tick(self, time):
+        for group in self.groups:
+            for coll in self.colliders_created:
+                ColliderGroup.remove_collider_from_group(group, coll)
         self.sprites.clear()
         self.check_all_collisions()
         for sprite in self.sprites:
