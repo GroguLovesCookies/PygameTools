@@ -38,7 +38,7 @@ class CharacterController(Component):
 
         if InputHandler.Instance.get_key_down(pygame.K_SPACE) and self.jumps > 0:
             self.rb.add_force(Vector2(0, self.jump_power))
-            self.rb.linear_velocity = Vector2(0, 0)
+            self.rb.linear_velocity.y = 0
             # self.jumps -= 1
 
 
