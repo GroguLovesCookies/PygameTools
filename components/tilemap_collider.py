@@ -2,6 +2,7 @@ from components.component import Component
 from components.rigid_body import RigidBodyComponent
 from components.collider import ColliderGroup
 from components.polygon_collider import PolygonCollider
+from components.semisolid import Semisolid
 from classes.aabb import AABB
 from vector.vector import Vector2
 from classes.custom_sprite import CustomSprite
@@ -62,6 +63,7 @@ class TilemapCollider(Component):
                 sprite.visible = False
                 sprite.add_component(RigidBodyComponent, 2, 0.7, Vector2(800, 40), RigidBodyComponent.TYPE_BOX, True)
                 coll = sprite.add_component(PolygonCollider, [collider])
+                sprite.add_component(Semisolid, coll)
                 for group in self.groups:
                     ColliderGroup.add_collider_to_group(group, coll)
 

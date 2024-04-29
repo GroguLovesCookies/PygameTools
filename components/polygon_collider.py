@@ -7,7 +7,7 @@ class PolygonCollider(Collider):
     def __init__(self, parent, colliders_to_check, offset = Vector2(0, 0)):
         super().__init__(parent, colliders_to_check, offset)
     
-    def is_colliding(self, other):
+    def check_colliding(self, other):
         if type(other) == PolygonCollider:
             depth = 1000000000000000000000000000000
             normal = Vector2(0, 0)

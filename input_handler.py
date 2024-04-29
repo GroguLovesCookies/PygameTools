@@ -48,6 +48,9 @@ class InputHandler:
         elif e.type == pygame.KEYUP and e.key not in self.released:
             self.released.append(e.key)
 
+    def get_key(self, code):
+        return pygame.key.get_pressed()[code]
+
     def get_key_down(self, code):
         return code in self.pressed
 

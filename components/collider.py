@@ -2,6 +2,7 @@ from components.component import Component
 from components.rigid_body import RigidBodyComponent
 from vector.vector import Vector2
 from tilemap.tilemap import Tilemap
+from classes.chain_function import ChainFunction
 
 
 class ColliderGroup:
@@ -56,13 +57,15 @@ class Collider(Component):
         self.center = self.parent.cartesian_pos + self.offset
         self.parent.pos_changed.append(self.on_parent_pos_change)
 
+        self.is_colliding = ChainFunction(self.check_colliding)
+
         self.groups = []
     
     def on_parent_pos_change(self):
         self.center = self.parent.cartesian_pos + self.offset
 
 
-    def is_colliding(self, other) -> bool:
+    def check_colliding(self, other) -> bool:
         return True
 
     def check_all_collisions(self) -> bool:

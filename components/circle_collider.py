@@ -8,7 +8,7 @@ class CircleCollider(Collider):
         super().__init__(parent, colliders_to_check, offset)
         self.size = size
 
-    def is_colliding(self, other):
+    def check_colliding(self, other):
         if type(other) == CircleCollider:
             total_length = self.size + other.size
             center_diff = (other.center - self.center).magnitude
